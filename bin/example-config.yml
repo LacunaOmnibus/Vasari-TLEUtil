@@ -2,5 +2,5 @@
 db_file: lacuna_db.db
 empire_name: Hiya
 empire_pass: Lol nah...
-ss_name_regex: ^Z|^ZZ|^ZZZ
+ss_name_regex: ^Z|^ZZ|^ZZZ|^SS|^SASS
 server_url: https://us1.lacunaexpanse.com
