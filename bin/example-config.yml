@@ -1,0 +1,6 @@
+---
+db_file: lacuna_db.db
+empire_name: Hiya
+empire_pass: Lol nah...
+ss_name_regex: ^Z|^ZZ|^ZZZ
+server_url: https://us1.lacunaexpanse.com
