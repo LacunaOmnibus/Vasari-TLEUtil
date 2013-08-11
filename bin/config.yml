@@ -1,6 +1,0 @@
----
-db_file: lacuna_db.db
-empire_name: Vasari
-empire_pass: Perlyboy168
-ss_name_regex: ^Z|^ZZ|^ZZZ
-server_url: https://us1.lacunaexpanse.com
