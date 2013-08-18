@@ -5,11 +5,37 @@ use warnings;
 use v5.10;
 
 use Data::Dumper;
+use List::Util (qw(first));
 
 use Moose;
 
 has 'glc'    => (is => 'rw', isa => 'Games::Lacuna::Client', required => 1);
 has 'config' => (is => 'rw', isa => 'HashRef',               required => 1);
+
+sub buildings {
+    my $self = shift;
+    my $id   = shift;
+
+    return $self->glc->body(id => $id)->get_buildings->{buildings} // {};
+}
+
+sub extract_building {
+    my $self        = shift;
+    my $buildings   = shift;
+    my $target_name = shift;
+
+    my $id = first {
+        $buildings->{$_}->{name} eq $target_name;
+    } keys %$buildings;
+
+    if ($id) {
+        ## Id is the key of the hash, gotta add it into the hash for later use.
+        $buildings->{$id}->{id} = $id;
+        return $buildings->{$id};
+    }
+
+    return;
+}
 
 sub colonies {
     my $self = shift;

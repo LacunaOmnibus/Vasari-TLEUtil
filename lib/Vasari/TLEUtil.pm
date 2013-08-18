@@ -40,8 +40,6 @@ sub run {
     my $task = $self->task;
     $self->$task();
 
-    say Dumper $self->bb->resolve(service => 'core')->status;
-
     if ($config->{debug}) {
         say 'Task complete, made the following server calls:';
         say Dumper $glc->{call_stats};
