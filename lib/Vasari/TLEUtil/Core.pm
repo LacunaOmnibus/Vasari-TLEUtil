@@ -5,12 +5,12 @@ use warnings;
 use v5.10;
 
 use Data::Dumper;
-use List::Util (qw(first));
 
 use Moose;
 
-has 'glc'    => (is => 'rw', isa => 'Games::Lacuna::Client', required => 1);
-has 'config' => (is => 'rw', isa => 'HashRef',               required => 1);
+has 'glc'    => (is => 'ro', isa => 'Games::Lacuna::Client', required => 1);
+has 'config' => (is => 'ro', isa => 'HashRef',               required => 1);
+has 'status' => (is => 'rw', isa => 'HashRef',               lazy_build => 1);
 
 sub buildings {
     my $self = shift;
@@ -33,8 +33,6 @@ sub extract_building {
         $buildings->{$id}->{id} = $id;
         return $buildings->{$id};
     }
-
-    return;
 }
 
 sub colonies {
@@ -94,36 +92,16 @@ sub get_bodies {
     }
 }
 
-## Bread::Board stores a singleton in it's initial state, but doesn't replace
-## it if anything got changed. This means, that every time glc is fetched,
-## there's no session id in there.  To get around this, let's make a call THEN
-## send it to bb.
-## This method should only get called by Bread::Board in the construction of
-## the glc singleton.
-sub innit_glc {
-    my $self = shift; ## Not that we want it... yet...
-    my $glc  = shift;
-    
-    my $status = $glc->empire->get_status // die 'No internet connection.';
-    
-    ## Do this so we can transport the status between glc and core while they're
-    ## being built by Bread::Board, saving a few RPCs.
-    $glc->{status} = $status;
-
-    return $glc;
-}
-
-## As a little hack around to make my life easier.
-sub status {
+sub _build_status {
     my $self = shift;
-    return $self->glc->{status};
+    return $self->glc->empire->get_status;
 }
 
 no Moose;
 __PACKAGE__->meta->make_immutable;
 1;
 
-__END__
+
 
 =head2 To be used later...
 sub _build_db {

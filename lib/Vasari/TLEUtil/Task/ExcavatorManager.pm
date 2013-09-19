@@ -7,7 +7,10 @@ use warnings;
 use Data::Dumper;
 use Moose;
 
-extends 'Vasari::TLEUtil::Core';
+has 'config' => (is => 'ro', isa => 'HashRef',               required => 1);
+has 'db'     => (is => 'ro',                                 required => 1);
+has 'glc'    => (is => 'ro', isa => 'Games::Lacuna::Client', required => 1);
+has 'core'   => (is => 'ro', isa => 'Vasari::TLEUtil::Core', required => 1);
 
 sub run {
     my $self = shift;
@@ -28,6 +31,8 @@ sub run {
         say $planet->{name};
     }
 =cut
+
+    say 'Heya, I\'m working now!';
 }
 
 no Moose;

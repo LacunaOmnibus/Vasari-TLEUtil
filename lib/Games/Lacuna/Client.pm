@@ -1,5 +1,5 @@
 package Games::Lacuna::Client;
-use 5.0080000;
+use v5.10;
 use strict;
 use warnings;
 use Carp 'croak';

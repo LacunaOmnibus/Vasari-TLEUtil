@@ -7,18 +7,29 @@ use warnings;
 use Moose;
 use Data::Dumper;
 
-use Vasari::TLEUtil::Container;
+use Vasari::TLEUtil::Core;
 use Vasari::TLEUtil::Task::ExcavatorManager;
 use Vasari::TLEUtil::Task::SSManager;
 
+use DBI;
+use Getopt::Long (qw(GetOptions));
+use YAML::XS (qw(LoadFile));
+use Games::Lacuna::Client;
+
 our $VERSION = "0.0.1";
+
 my @available_tasks = [
     'excavator_manager',
     'ss_manager',
 ];
 
 has 'task'   => (is => 'rw', isa => 'Str', required => 1);
-has 'bb'     => (is => 'rw', isa => 'Vasari::TLEUtil::Container', lazy_build => 1);
+
+# Build a bunch of things we need.
+has 'config' => (is => 'rw', isa => 'HashRef',               lazy_build => 1);
+has 'db'     => (is => 'ro',                                 lazy_build => 1);
+has 'glc'    => (is => 'ro', isa => 'Games::Lacuna::Client', lazy_build => 1);
+has 'core'   => (is => 'ro', isa => 'Vasari::TLEUtil::Core', lazy_build => 1);
 
 sub run {
     my $self = shift;
@@ -28,40 +39,72 @@ sub run {
         die 'Bad task.';
     }
 
-    my $config = $self->bb->resolve(service => 'config');
-    my $glc    = $self->bb->resolve(service => 'glc');
-
     ## Once we have all that, move on...
     say 'Running the ' . $self->task . ' task.';
     
+    ## TODO: measure run time of the task!
+
     ## Not sure if there's a cleaner way to do this, but it works! :D
     ## I think something like this should work, but I'm missing something...
     ## $self->{$self->task}();
     my $task = $self->task;
     $self->$task();
-
-    if ($config->{debug}) {
-        say 'Task complete, made the following server calls:';
-        say Dumper $glc->{call_stats};
-    }
 }
 
 sub excavator_manager {
     my $self = shift;
-    Vasari::TLEUtil::Task::ExcavatorManager->new(bb => $self->bb)->run;
+    my $task = Vasari::TLEUtil::Task::ExcavatorManager->new(
+        db     => $self->db,
+        glc    => $self->glc,
+        config => $self->config,
+        core   => $self->core,
+    );
+    $task->run;
 }
 
 sub ss_manager {
     my $self = shift;
-    Vasari::TLEUtil::Task::SSManager->new(bb => $self->bb)->run;
+    my $task = Vasari::TLEUtil::Task::SSManager->new(
+        
+    );
+    $task->run;
 }
 
-sub _build_bb {
+sub _build_config {
     my $self = shift;
 
-    return Vasari::TLEUtil::Container->new(
-        ## Just the Bread::Board app name, nothing I care about. ;)
-        name => 'App',
+    my $config = LoadFile('config.yml');
+    
+    GetOptions(
+        "debug" => \$config->{debug},
+    );
+
+    return $config;
+}
+
+sub _build_db {
+    my $self = shift;
+
+    return DBI->connect('DBI:SQLite:dbname='.$self->config->{db_file}) or die DBI->errstr;
+}
+
+sub _build_glc {
+    my $self = shift;
+
+    return Games::Lacuna::Client->new(
+        name      => $self->config->{empire_name},
+        password  => $self->config->{empire_pass},
+        uri       => $self->config->{server_url},
+        api_key   => $self->config->{api_key} || 'anonymous',
+    );
+}
+
+sub _build_core {
+    my $self = shift;
+
+    return Vasari::TLEUtil::Core->new(
+        glc    => $self->glc,
+        config => $self->config
     );
 }
 

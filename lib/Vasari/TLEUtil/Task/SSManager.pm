@@ -1,5 +1,29 @@
 package Vasari::TLEUtil::Task::SSManager;
 
+=head2 NOTE
+
+
+
+
+            NOTE: EVERYTHING IN HERE IS BROKEN, FUCK OFF!!!
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+=cut
+
 use v5.10;
 use strict;
 use warnings;
@@ -90,6 +114,7 @@ sub work {
                 if (grep {$_->{level} == $module->{level} + 1 and $_->{name} eq $module->{name}} @{$ss->{plans}}) {
                     ## Do the upgrade.
                     say Dumper $module;
+                    $self->upgrade_module($module);
                 }
                 else {
                     ## This is what needs to happen:

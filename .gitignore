@@ -15,4 +15,6 @@ MYMETA.yml
 nytprof.out
 pm_to_blib
 
+# Stuff that the module uses.
 config.yml
+lacuna_db.db
