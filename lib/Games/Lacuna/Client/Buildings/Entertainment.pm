@@ -11,8 +11,9 @@ our @ISA = qw(Games::Lacuna::Client::Buildings);
 
 sub api_methods {
   return {
-    view            => { default_args => [qw(session_id building_id)] },
-    duck_quack      => { default_args => [qw(session_id building_id)] },
+    view                       => { default_args => [qw(session_id building_id)] },
+    duck_quack                 => { default_args => [qw(session_id building_id)] },
+    get_lottery_voting_options => { default_args => [qw(session_id building_id)] },
   };
 }
 

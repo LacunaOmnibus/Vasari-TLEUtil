@@ -10,6 +10,7 @@ use Data::Dumper;
 use Vasari::TLEUtil::Core;
 use Vasari::TLEUtil::Task::ExcavatorManager;
 use Vasari::TLEUtil::Task::SSManager;
+use Vasari::TLEUtil::Task::LotteryRunner;
 
 use DBI;
 use Getopt::Long (qw(GetOptions));
@@ -21,6 +22,7 @@ our $VERSION = "0.0.1";
 my @available_tasks = [
     'excavator_manager',
     'ss_manager',
+    'lottery_runner',
 ];
 
 has 'task'   => (is => 'rw', isa => 'Str', required => 1);
@@ -66,6 +68,16 @@ sub ss_manager {
     my $self = shift;
     my $task = Vasari::TLEUtil::Task::SSManager->new(
         
+    );
+    $task->run;
+}
+
+sub lottery_runner {
+    my $self = shift;
+    my $task = Vasari::TLEUtil::Task::LotteryRunner->new(
+        glc => $self->glc,
+        config => $self->config,
+        core => $self->core,
     );
     $task->run;
 }

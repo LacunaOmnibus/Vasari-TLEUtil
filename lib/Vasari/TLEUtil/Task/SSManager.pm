@@ -5,7 +5,7 @@ package Vasari::TLEUtil::Task::SSManager;
 
 
 
-            NOTE: EVERYTHING IN HERE IS BROKEN, FUCK OFF!!!
+            NOTE: EVERYTHING IN HERE IS BROKEN, MOVE ALONG.
 
 
 

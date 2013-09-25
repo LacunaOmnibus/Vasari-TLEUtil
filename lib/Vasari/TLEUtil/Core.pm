@@ -8,6 +8,8 @@ use Data::Dumper;
 
 use Moose;
 
+use List::Util (qw(first));
+
 has 'glc'    => (is => 'ro', isa => 'Games::Lacuna::Client', required => 1);
 has 'config' => (is => 'ro', isa => 'HashRef',               required => 1);
 has 'status' => (is => 'rw', isa => 'HashRef',               lazy_build => 1);
@@ -16,6 +18,10 @@ sub buildings {
     my $self = shift;
     my $id   = shift;
 
+    unless ($id) {
+        return;
+    }
+
     return $self->glc->body(id => $id)->get_buildings->{buildings} // {};
 }
 
@@ -23,6 +29,10 @@ sub extract_building {
     my $self        = shift;
     my $buildings   = shift;
     my $target_name = shift;
+
+    unless ($buildings and $target_name) {
+        return;
+    }
 
     my $id = first {
         $buildings->{$_}->{name} eq $target_name;
