@@ -11,8 +11,8 @@ use Vasari::TLEUtil::Core;
 use Vasari::TLEUtil::Task::ExcavatorManager;
 use Vasari::TLEUtil::Task::SSManager;
 use Vasari::TLEUtil::Task::LotteryRunner;
+use Vasari::TLEUtil::Task::BuildingsUpgrader;
 
-use DBI;
 use Getopt::Long (qw(GetOptions));
 use YAML::XS (qw(LoadFile));
 use Games::Lacuna::Client;
@@ -23,6 +23,7 @@ my @available_tasks = [
     'excavator_manager',
     'ss_manager',
     'lottery_runner',
+    'buildings_upgrader',
 ];
 
 has 'task'   => (is => 'rw', isa => 'Str', required => 1);
@@ -53,21 +54,22 @@ sub run {
     $self->$task();
 }
 
-sub excavator_manager {
+sub buildings_upgrader {
     my $self = shift;
-    my $task = Vasari::TLEUtil::Task::ExcavatorManager->new(
-        db     => $self->db,
+    my $task = Vasari::TLEUtil::Task::BuildingsUpgrader->new(
         glc    => $self->glc,
-        config => $self->config,
         core   => $self->core,
+        config => $self->config,
     );
     $task->run;
 }
 
-sub ss_manager {
+sub excavator_manager {
     my $self = shift;
-    my $task = Vasari::TLEUtil::Task::SSManager->new(
-        
+    my $task = Vasari::TLEUtil::Task::ExcavatorManager->new(
+        glc    => $self->glc,
+        config => $self->config,
+        core   => $self->core,
     );
     $task->run;
 }
@@ -78,6 +80,14 @@ sub lottery_runner {
         glc => $self->glc,
         config => $self->config,
         core => $self->core,
+    );
+    $task->run;
+}
+
+sub ss_manager {
+    my $self = shift;
+    my $task = Vasari::TLEUtil::Task::SSManager->new(
+        
     );
     $task->run;
 }

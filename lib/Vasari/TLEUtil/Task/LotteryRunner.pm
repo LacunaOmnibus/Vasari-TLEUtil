@@ -56,7 +56,6 @@ sub vote {
 
         ## Grab the vote options.
         my $vote_options = $ed_obj->get_lottery_voting_options->{options};
-        say Dumper $vote_options;
 
         for (1..$votes_per_planet) {
             my $vote = pop $vote_options; ##  Does it really matter if we do them in reverse order?

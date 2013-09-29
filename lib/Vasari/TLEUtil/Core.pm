@@ -69,7 +69,7 @@ sub bodies {
 sub get_bodies {
     my $self = shift;
 
-    ## There should already be a status, created when glc was built.
+    ## There should already be a status, created when $self was built.
     ## If there isn't something stupid has happened.
     return {} if (not $self->status->{empire}->{planets});
 
