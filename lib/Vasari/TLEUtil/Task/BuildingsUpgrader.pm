@@ -317,6 +317,14 @@ sub _build_build_list {
             level => 30,
         },
         {
+            name => 'Entertainment District',
+            level => 30,
+        },
+        { ## Not sure why I have one of these, but oh well, upgrade it!
+            name => 'Luxury Housing',
+            level => 30,
+        },
+        {
             name  => 'Space Port',
             level => 28,
         },
