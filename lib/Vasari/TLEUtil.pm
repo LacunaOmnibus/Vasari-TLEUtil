@@ -98,7 +98,8 @@ sub _build_config {
     my $config = LoadFile('config.yml');
     
     GetOptions(
-        "debug" => \$config->{debug},
+        "debug"   => \$config->{debug},
+        "dry_run" => \$config->{dry_run},
     );
 
     return $config;

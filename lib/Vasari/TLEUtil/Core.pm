@@ -45,6 +45,27 @@ sub extract_building {
     }
 }
 
+sub extract_all_matching_buildings {
+    my $self = shift;
+    my $buildings = shift;
+    my $target_name = shift;
+    my $rv          = [];
+    
+    foreach my $id (keys %$buildings) {
+        my $building = $buildings->{$id};
+        if ($building->{name} eq $target_name) {
+            $building->{id} = $id; ## Add id.
+            push @$rv, $building;
+        }
+    }
+    
+    ## This method will most likely only be used by the buildings upgrader.
+    ## Sort by level to most time effectively upgrade everything.
+    my @return_value = sort {$a->{level} <=> $b->{level}} @$rv;
+    
+    return \@return_value;
+}
+
 sub colonies {
     my $self = shift;
     return $self->status->{empire}->{colonies} if (defined $self->status->{empire}->{colonies});
